@@ -2,153 +2,65 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import plotly.graph_objs as go
 import dash_html_components as html
-import plotly.io as pio
 import pandas as pd
-import dash_table
-import plotly_express as px
 from plotly.subplots import make_subplots
-from dash.dependencies import Input, Output
-import psycopg2
+import pathlib
 
-from app import app
+PATH = pathlib.Path(__file__).parent
+DATA_PATH = PATH.joinpath("../datasets").resolve()
 
-param_dic = {
-    "host"      : "localhost",
-    "database"  : "gas_atacama",
-    "user"      : "postgres",
-    "password"  : "c1b21ch"
-}
-def connect(params_dic):
-    """ Connect to the PostgreSQL database server """
-    conn = None
-    try:
-        # connect to the PostgreSQL server
-        print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(**params_dic)
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-        SystemExit(1)
-    print("Connection successful")
-    return conn
+df = pd.read_csv(DATA_PATH.joinpath("potenciales_on_off.csv"))
+df1 = df.loc[df['cmp'] == "CMP 006"]
+df2 = df.loc[df['cmp'] == "CMP 010"]
+df3 = df.loc[df['cmp'] == "CMP 017"]
+df4 = df.loc[df['cmp'] == "CMP 021"]
+df5 = df.loc[df['cmp'] == "CMP 034"]
+df6 = df.loc[df['cmp'] == "CMP 043"]
+df7 = df.loc[df['cmp'] == "CMP 056"]
+df8 = df.loc[df['cmp'] == "CMP 071"]
+df9 = df.loc[df['cmp'] == "CMP 084"]
+df10 = df.loc[df['cmp'] == "CMP 090"]
+df11 = df.loc[df['cmp'] == "CMP 101"]
+df12 = df.loc[df['cmp'] == "CMP 105"]
+df13 = df.loc[df['cmp'] == "CMP 122"]
+df14 = df.loc[df['cmp'] == "CMP 143"]
+df15 = df.loc[df['cmp'] == "CMP 153"]
+df16 = df.loc[df['cmp'] == "CMP 173"]
+df17 = df.loc[df['cmp'] == "CMP 184"]
+df18 = df.loc[df['cmp'] == "CMP 203"]
+df19 = df.loc[df['cmp'] == "CMP 220"]
+df20 = df.loc[df['cmp'] == "CMP 221 02AN"]
+df21 = df.loc[df['cmp'] == "CMP 236"]
+df22 = df.loc[df['cmp'] == "CMP 245"]
+df23 = df.loc[df['cmp'] == "CMP 249"]
+df24 = df.loc[df['cmp'] == "CMP 259"]
+df25 = df.loc[df['cmp'] == "CMP 271"]
+df26 = df.loc[df['cmp'] == "CMP 278"]
+df27 = df.loc[df['cmp'] == "CMP 284"]
+df28 = df.loc[df['cmp'] == "CMP 289"]
+df29 = df.loc[df['cmp'] == "CMP 295"]
+df30 = df.loc[df['cmp'] == "CMP 300"]
+df31 = df.loc[df['cmp'] == "CMP 307"]
+df32 = df.loc[df['cmp'] == "CMP 312"]
+df33 = df.loc[df['cmp'] == "CMP 318"]
+df34 = df.loc[df['cmp'] == "CMP 326"]
+df35 = df.loc[df['cmp'] == "CMP 332"]
+df36 = df.loc[df['cmp'] == "CMP 337"]
+df37 = df.loc[df['cmp'] == "CMP 345"]
+df38 = df.loc[df['cmp'] == "CMP 350"]
+df39 = df.loc[df['cmp'] == "CMP 363"]
+df40 = df.loc[df['cmp'] == "CMP 368"]
+df41 = df.loc[df['cmp'] == "CMP 375"]
+df42 = df.loc[df['cmp'] == "CMP 380"]
+df43 = df.loc[df['cmp'] == "CMP 388"]
+df44 = df.loc[df['cmp'] == "CMP 389"]
+df45 = df.loc[df['cmp'] == "CMP 395"]
+df46 = df.loc[df['cmp'] == "CMP 405"]
+df47 = df.loc[df['cmp'] == "CMP 412"]
 
-def postgresql_to_dataframe(conn, select_query, column_names):
-    """
-    Tranform a SELECT query into a pandas dataframe
-    """
-    cursor = conn.cursor()
-    try:
-        cursor.execute(select_query)
-    except (Exception, psycopg2.DatabaseError) as error:
-        print("Error: %s" % error)
-        cursor.close()
-        return 1
-    
-    # Naturally we get a list of tupples
-    tupples = cursor.fetchall()
-    cursor.close()
-    
-    # We just need to turn it into a pandas dataframe
-    df = pd.DataFrame(tupples, columns=column_names)
-    return df
 
-conn = connect(param_dic)
-column_names = ["fecha", "potencial", "cmp"]
 
-pio.templates.default = "simple_white"
-# Execute the "SELECT *" query
-df1 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 006' ", column_names)
 
-df2 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 010' ", column_names)
-
-df3 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 017' ", column_names)
-
-df4 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 021' ", column_names)
-
-df5 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 034' ", column_names)
-
-df6 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 043' ", column_names)
-
-df7 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 056' ", column_names)
-
-df8 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 071' ", column_names)
-
-df9 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 084' ", column_names)
-
-df10 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 090' ", column_names)
-
-df11 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 101' ", column_names)
-
-df12 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 105' ", column_names)
-
-df13 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 122' ", column_names)
-
-df14 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 143' ", column_names)
-
-df15 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 153' ", column_names)
-
-df16 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 173' ", column_names)
-
-df17 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 184' ", column_names)
-
-df18 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 203' ", column_names)
-
-df19 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 220' ", column_names)
-
-df20 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 221 02AN' ", column_names)
-
-df21 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 236' ", column_names)
-
-df22 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 245' ", column_names)
-
-df23 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 249' ", column_names)
-
-df24 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 259' ", column_names)
-
-df25 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 271' ", column_names)
-
-df26 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 278' ", column_names)
-
-df27 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 284' ", column_names)
-
-df28 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 289' ", column_names)
-
-df29 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 295' ", column_names)
-
-df30 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 300' ", column_names)
-
-df31 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 307' ", column_names)
-
-df32 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 312' ", column_names)
-
-df33 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 318' ", column_names)
-
-df34 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 326' ", column_names)
-
-df35 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 332' ", column_names)
-
-df36 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 337' ", column_names)
-
-df37 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 345' ", column_names)
-
-df38 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 350' ", column_names)
-
-df39 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 363' ", column_names)
-
-df40 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 368' ", column_names)
-
-df41 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 375' ", column_names)
-
-df42 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 380' ", column_names)
-
-df43 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 388' ", column_names)
-
-df44 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 389' ", column_names)
-
-df45 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 395' ", column_names)
-
-df46 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 405' ", column_names)
-
-df47 = postgresql_to_dataframe(conn, "select * from potenciales_on_off where cmp='CMP 412' ", column_names)
 
 
 fig1 = make_subplots(specs=[[{"secondary_y": True}]])
@@ -578,7 +490,7 @@ grafico47 = dbc.Card(
         
 tab1_content = dbc.Container(
     [
-        html.Br(),
+        html.Hr(),
         html.H1("Potenciales ON-OFF"),
         html.Hr(),
         dbc.Row(
@@ -760,7 +672,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico11, md=9),
@@ -778,7 +690,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico12, md=9),
@@ -796,7 +708,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico13, md=9),
@@ -814,7 +726,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico14, md=9),
@@ -832,7 +744,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico15, md=9),
@@ -850,7 +762,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico16, md=9),
@@ -868,7 +780,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico17, md=9),
@@ -886,7 +798,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico18, md=9),
@@ -904,7 +816,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico19, md=9),
@@ -922,7 +834,7 @@ tab1_content = dbc.Container(
             ],
             align="top", className='pretty_container'
         ),
-        html.Hr(),
+        html.Br(),
         dbc.Row(
             [
                 dbc.Col(grafico20, md=9),

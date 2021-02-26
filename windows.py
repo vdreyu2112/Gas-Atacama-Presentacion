@@ -1,12 +1,10 @@
-import plotly.graph_objs as go
-import dash_core_components as dcc 
+import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc 
 from dash.dependencies import Input, Output
 from app import app
-from app import server
 
-from apps import potenciales_on, potenciales_off, potenciales_on_off
+from apps import potenciales_off, potenciales_on, potenciales_on_off
 SIDEBAR_STYLE = {
     "position": "fixed",
     "top": 0,
@@ -32,9 +30,9 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Potenciales ON", href="/page-1", active="exact"),
-                dbc.NavLink("Potenciales ON-OFF", href="/page-2", active="exact"),
-                dbc.NavLink("Potenciales OFF", href="/page-3", active="exact"),
+                dbc.NavLink("Potenciales ON", href="/", active="exact"),
+                dbc.NavLink("Potenciales ON-OFF", href="/potenciales_on_on", active="exact"),
+                dbc.NavLink("Potenciales OFF", href="/potenciales_off", active="exact"),
             
             ],
             vertical=True,
@@ -45,16 +43,17 @@ sidebar = html.Div(
 )
 content = html.Div(id="page-content", style=CONTENT_STYLE)
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div([dcc.Location(id="url", refresh=False), sidebar, content])
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
-    if pathname == "/page-1":
+
+    if pathname == "/":
         return potenciales_on.layout
-    if pathname == "/page-2":
+    elif pathname == "/potenciales_on_off":
         return potenciales_on_off.layout
-    if pathname == "/page-3":
+    elif pathname == "/potenciales_off":
         return potenciales_off.layout
     return dbc.Jumbotron(
         [
